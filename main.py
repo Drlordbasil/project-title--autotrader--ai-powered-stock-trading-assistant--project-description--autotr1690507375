@@ -22,7 +22,8 @@ class AutoTrader:
         if response.status_code == 200:
             self.stock_prices = pd.DataFrame(response.json())
         else:
-            raise Exception(f"Failed to collect stock prices. Error code: {response.status_code}")
+            raise Exception(
+                f"Failed to collect stock prices. Error code: {response.status_code}")
 
     def collect_news_data(self, symbol, start_date, end_date):
         url = f"https://api.example.com/news_data?symbol={symbol}&start_date={start_date}&end_date={end_date}"
@@ -30,7 +31,8 @@ class AutoTrader:
         if response.status_code == 200:
             self.news_data = pd.DataFrame(response.json())
         else:
-            raise Exception(f"Failed to collect news data. Error code: {response.status_code}")
+            raise Exception(
+                f"Failed to collect news data. Error code: {response.status_code}")
 
     def collect_social_media_data(self, symbol, start_date, end_date):
         url = f"https://api.example.com/social_media_data?symbol={symbol}&start_date={start_date}&end_date={end_date}"
@@ -38,7 +40,8 @@ class AutoTrader:
         if response.status_code == 200:
             self.social_media_data = pd.DataFrame(response.json())
         else:
-            raise Exception(f"Failed to collect social media data. Error code: {response.status_code}")
+            raise Exception(
+                f"Failed to collect social media data. Error code: {response.status_code}")
 
     def preprocess_data(self):
         # Clean and preprocess collected data
@@ -48,11 +51,13 @@ class AutoTrader:
         self.news_data['date'] = pd.to_datetime(self.news_data['date'])
         self.news_data.set_index('date', inplace=True)
 
-        self.social_media_data['date'] = pd.to_datetime(self.social_media_data['date'])
+        self.social_media_data['date'] = pd.to_datetime(
+            self.social_media_data['date'])
         self.social_media_data.set_index('date', inplace=True)
 
         # Merge collected data
-        self.data = pd.concat([self.stock_prices, self.news_data, self.social_media_data], axis=1)
+        self.data = pd.concat(
+            [self.stock_prices, self.news_data, self.social_media_data], axis=1)
         self.data.fillna(0, inplace=True)
 
     def sentiment_analysis(self):
@@ -65,10 +70,14 @@ class AutoTrader:
 
     def technical_analysis(self):
         # Calculate technical indicators
-        self.data['moving_average'] = self.data['close_price'].rolling(window=20).mean()
-        self.data['bollinger_upper'] = self.data['moving_average'] + 2 * self.data['close_price'].rolling(window=20).std()
-        self.data['bollinger_lower'] = self.data['moving_average'] - 2 * self.data['close_price'].rolling(window=20).std()
-        self.data['macd'] = self.data['close_price'].ewm(span=12).mean() - self.data['close_price'].ewm(span=26).mean()
+        self.data['moving_average'] = self.data['close_price'].rolling(
+            window=20).mean()
+        self.data['bollinger_upper'] = self.data['moving_average'] + \
+            2 * self.data['close_price'].rolling(window=20).std()
+        self.data['bollinger_lower'] = self.data['moving_average'] - \
+            2 * self.data['close_price'].rolling(window=20).std()
+        self.data['macd'] = self.data['close_price'].ewm(
+            span=12).mean() - self.data['close_price'].ewm(span=26).mean()
         self.data['rsi'] = self.calculate_rsi()
 
     def calculate_rsi(self):
@@ -103,7 +112,8 @@ class AutoTrader:
 
         # Build and train the LSTM model
         model = Sequential()
-        model.add(LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+        model.add(LSTM(units=50, return_sequences=True,
+                  input_shape=(X_train.shape[1], X_train.shape[2])))
         model.add(LSTM(units=50))
         model.add(Dense(units=1))
         model.compile(optimizer='adam', loss='mean_squared_error')
@@ -122,17 +132,22 @@ class AutoTrader:
     def visualize_data(self):
         # Plot historical stock prices
         fig = go.Figure()
-        fig.add_trace(go.Line(x=self.data.index, y=self.data['close_price'], name="Close Price"))
-        fig.update_layout(title_text='Historical Stock Prices', xaxis_rangeslider_visible=True)
+        fig.add_trace(go.Line(x=self.data.index,
+                      y=self.data['close_price'], name="Close Price"))
+        fig.update_layout(title_text='Historical Stock Prices',
+                          xaxis_rangeslider_visible=True)
         fig.show()
 
         # Plot technical indicators
         fig, axes = plt.subplots(2, 2, figsize=(12, 8))
         axes[0, 0].plot(self.data.index, self.data['moving_average'])
         axes[0, 0].set_title('Moving Average')
-        axes[0, 1].plot(self.data.index, self.data['bollinger_upper'], 'r--', label='Upper Band')
-        axes[0, 1].plot(self.data.index, self.data['bollinger_lower'], 'r--', label='Lower Band')
-        axes[0, 1].plot(self.data.index, self.data['close_price'], label='Close Price')
+        axes[0, 1].plot(
+            self.data.index, self.data['bollinger_upper'], 'r--', label='Upper Band')
+        axes[0, 1].plot(
+            self.data.index, self.data['bollinger_lower'], 'r--', label='Lower Band')
+        axes[0, 1].plot(self.data.index,
+                        self.data['close_price'], label='Close Price')
         axes[0, 1].set_title('Bollinger Bands')
         axes[0, 1].legend()
         axes[1, 0].plot(self.data.index, self.data['macd'])
@@ -144,9 +159,12 @@ class AutoTrader:
 
 
 auto_trader = AutoTrader()
-auto_trader.collect_stock_prices(symbol='AAPL', start_date='2021-01-01', end_date='2021-12-31')
-auto_trader.collect_news_data(symbol='AAPL', start_date='2021-01-01', end_date='2021-12-31')
-auto_trader.collect_social_media_data(symbol='AAPL', start_date='2021-01-01', end_date='2021-12-31')
+auto_trader.collect_stock_prices(
+    symbol='AAPL', start_date='2021-01-01', end_date='2021-12-31')
+auto_trader.collect_news_data(
+    symbol='AAPL', start_date='2021-01-01', end_date='2021-12-31')
+auto_trader.collect_social_media_data(
+    symbol='AAPL', start_date='2021-01-01', end_date='2021-12-31')
 auto_trader.prepare_data()
 auto_trader.visualize_data()
 model = auto_trader.train_model()

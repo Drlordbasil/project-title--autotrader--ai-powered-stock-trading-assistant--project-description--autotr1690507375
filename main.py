@@ -15,6 +15,7 @@ class AutoTrader:
         self.stock_prices = pd.DataFrame()
         self.news_data = pd.DataFrame()
         self.social_media_data = pd.DataFrame()
+        self.data = pd.DataFrame()
 
     def collect_stock_prices(self, symbol, start_date, end_date):
         url = f"https://api.example.com/stock_prices?symbol={symbol}&start_date={start_date}&end_date={end_date}"
@@ -62,10 +63,8 @@ class AutoTrader:
 
     def sentiment_analysis(self):
         # Apply sentiment analysis to news articles and social media data
-        sentiment_scores = []
-        for text in self.data['news']:
-            sentiment = TextBlob(text).sentiment.polarity
-            sentiment_scores.append(sentiment)
+        sentiment_scores = self.data['news'].apply(
+            lambda text: TextBlob(text).sentiment.polarity)
         self.data['sentiment'] = sentiment_scores
 
     def technical_analysis(self):
